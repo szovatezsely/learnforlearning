@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Megjegyzések')}"></head>
+<body>
+<nav th:replace="~{fragments :: navbar}"></nav>
+
+<main class="py-4">
+    <div class="container">
+        <h1 class="mb-4">
+            <span th:text="${teacher.name}">Oktató</span> – megjegyzések
+        </h1>
+
+        <div th:with="hasComments=${#lists.size(comments) > 0 and comments.?[hasComment()].size() > 0}">
+            <div th:if="${!hasComments}" class="alert alert-secondary">
+                Erről az oktatóról még nem írtak megjegyzést.
+            </div>
+            <div class="mb-3" th:each="c : ${comments}" th:if="${c.hasComment()}">
+                <div class="card">
+                    <div class="card-header">
+                        <strong th:text="${c.author()}">Szerző</strong>
+                        <span th:if="${c.positiveVote() == true}" class="badge bg-success ms-2">👍</span>
+                        <span th:if="${c.positiveVote() == false}" class="badge bg-danger ms-2">👎</span>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text mb-0" th:text="${c.comment()}">...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <a th:if="${subjectId != null}" th:href="@{/subjects/{id}(id=${subjectId})}"
+           class="btn btn-outline-secondary">Vissza a tárgyhoz</a>
+        <a th:unless="${subjectId != null}" th:href="@{/subjects}"
+           class="btn btn-outline-secondary">Vissza a listához</a>
+    </div>
+</main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
+<th:block th:replace="~{fragments :: scripts}"></th:block>
+</body>
+</html>

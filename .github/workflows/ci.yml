@@ -1,0 +1,37 @@
+name: CI
+
+# Run on every commit pushed to a PR, and again when a PR is merged
+# (a merge lands as a push to the target branch).
+on:
+  pull_request:
+  push:
+    branches: [main, master]
+
+jobs:
+  test:
+    name: Build & test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: gradle
+
+      - name: Build and run tests
+        run: |
+          chmod +x ./gradlew
+          ./gradlew build --no-daemon
+
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: build/reports/tests/test
+          if-no-files-found: ignore

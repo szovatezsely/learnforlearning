@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Kezdőlap')}"></head>
+<body>
+<nav th:replace="~{fragments :: navbar}"></nav>
+<div th:replace="~{fragments :: flash}"></div>
+
+<main class="py-4">
+    <div class="container">
+        <div class="p-5 mb-4 bg-light rounded-3">
+            <h1 class="display-4">Üdvözöllek!</h1>
+            <p class="lead">Jelen szoftver célja, hogy a kötelezően választható tárgyak közül
+                meghatározza, kinek melyik tárgy lenne a legalkalmasabb a felvételre.</p>
+            <hr class="my-4">
+            <ul>
+                <li>Az alkalmazást használó felhasználók száma:
+                    <strong th:text="${stats.userCount()}">0</strong></li>
+                <li>A felhasznált adatok mennyisége:
+                    <strong th:text="${stats.gradeCount()}">0</strong></li>
+            </ul>
+            <a class="btn btn-secondary btn-lg" th:href="@{/subjects}" role="button">Tárgyak listázása</a>
+
+            <th:block th:if="${!stats.recentComments().isEmpty()}">
+                <hr class="my-4">
+                <h2>Néhány, a felhasználók által alkotott megjegyzés</h2>
+                <div class="mb-2" th:each="comment : ${stats.recentComments()}">
+                    <div class="card">
+                        <div class="card-header">
+                            <strong th:text="${comment.author()}">Szerző</strong> megjegyzése
+                        </div>
+                        <div class="card-body">
+                            <h6 class="card-subtitle mb-2 text-muted" th:text="${comment.comment()}">...</h6>
+                        </div>
+                    </div>
+                </div>
+            </th:block>
+
+            <hr class="my-4">
+            <p>A felhasználók szerinti jelenlegi legjobb oktató:
+                <span class="fw-bold fs-5" th:text="${stats.bestTeacher()}">—</span></p>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
+<th:block th:replace="~{fragments :: scripts}"></th:block>
+</body>
+</html>

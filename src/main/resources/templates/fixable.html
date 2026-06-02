@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments :: head('Javítási észrevételek')}"></head>
+<body>
+<nav th:replace="~{fragments :: navbar}"></nav>
+<div th:replace="~{fragments :: flash}"></div>
+
+<main class="py-4">
+    <div class="container">
+        <h1 class="mb-4">Javítási észrevételek</h1>
+
+        <div sec:authorize="!isAuthenticated()" class="alert alert-info">
+            Az észrevételek küldéséhez <a th:href="@{/login}">jelentkezz be</a>.
+        </div>
+
+        <div sec:authorize="isAuthenticated()">
+            <!-- Dispute a teacher's activity -->
+            <div class="card mb-4">
+                <div class="card-header">Oktató aktivitásának kifogásolása</div>
+                <div class="card-body">
+                    <form th:action="@{/fixable/activity}" method="post" class="row g-3">
+                        <div class="col-md-5">
+                            <label for="disputeSubject" class="form-label">Tárgy</label>
+                            <select id="disputeSubject" name="subjectId" class="form-select" required>
+                                <option value="">Válassz tárgyat...</option>
+                                <option th:each="s : ${subjects}" th:value="${s.id}" th:text="${s.name}">Tárgy</option>
+                            </select>
+                        </div>
+                        <div class="col-md-5">
+                            <label for="disputeTeacher" class="form-label">Oktató</label>
+                            <select id="disputeTeacher" name="teacherId" class="form-select" required>
+                                <option value="">Előbb válassz tárgyat...</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="disputeActive" name="active" value="true">
+                                <label class="form-check-label" for="disputeActive">Aktív?</label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-secondary">Észrevétel küldése</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Suggest a teacher -->
+            <div class="card mb-4">
+                <div class="card-header">Új oktató javaslása</div>
+                <div class="card-body">
+                    <form th:action="@{/fixable/newTeacher}" th:object="${teacherForm}" method="post" class="row g-3">
+                        <div class="col-md-6">
+                            <label for="tname" class="form-label">Oktató neve</label>
+                            <input type="text" id="tname" class="form-control" th:field="*{name}"
+                                   th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="tsubject" class="form-label">Tárgy</label>
+                            <select id="tsubject" class="form-select" th:field="*{subjectId}"
+                                    th:classappend="${#fields.hasErrors('subjectId')} ? 'is-invalid'">
+                                <option value="">Válassz tárgyat...</option>
+                                <option th:each="s : ${subjects}" th:value="${s.id}" th:text="${s.name}">Tárgy</option>
+                            </select>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('subjectId')}" th:errors="*{subjectId}"></div>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-secondary">Javaslat küldése</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Suggest a subject -->
+            <div class="card mb-4">
+                <div class="card-header">Új tárgy javaslása</div>
+                <div class="card-body">
+                    <form th:action="@{/fixable/newSubject}" th:object="${subjectForm}" method="post" class="row g-3">
+                        <div class="col-md-6">
+                            <label for="sname" class="form-label">Tárgy neve</label>
+                            <input type="text" id="sname" class="form-control" th:field="*{name}"
+                                   th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="scode" class="form-label">Kód</label>
+                            <input type="text" id="scode" class="form-control" th:field="*{code}"
+                                   th:classappend="${#fields.hasErrors('code')} ? 'is-invalid'">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('code')}" th:errors="*{code}"></div>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="scredit" class="form-label">Kredit</label>
+                            <input type="number" id="scredit" min="1" max="20" class="form-control" th:field="*{credit}"
+                                   th:classappend="${#fields.hasErrors('credit')} ? 'is-invalid'">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('credit')}" th:errors="*{credit}"></div>
+                        </div>
+                        <div class="col-12">
+                            <label for="surl" class="form-label">Tematika URL</label>
+                            <input type="text" id="surl" class="form-control" th:field="*{url}"
+                                   th:classappend="${#fields.hasErrors('url')} ? 'is-invalid'">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('url')}" th:errors="*{url}"></div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="evenSemester" th:field="*{evenSemester}">
+                                <label class="form-check-label" for="evenSemester">Tavaszi félév</label>
+                            </div>
+                        </div>
+                        <fieldset class="col-md-6 border rounded p-2">
+                            <legend class="h6">Elérhető szakirányok</legend>
+                            <div class="form-check"><input class="form-check-input" type="checkbox" id="existsOnA" th:field="*{existsOnA}"><label class="form-check-label" for="existsOnA">A szakirány</label></div>
+                            <div class="form-check"><input class="form-check-input" type="checkbox" id="existsOnB" th:field="*{existsOnB}"><label class="form-check-label" for="existsOnB">B szakirány</label></div>
+                            <div class="form-check"><input class="form-check-input" type="checkbox" id="existsOnC" th:field="*{existsOnC}"><label class="form-check-label" for="existsOnC">C szakirány</label></div>
+                        </fieldset>
+                        <fieldset class="col-md-6 border rounded p-2">
+                            <legend class="h6">Kötelezően választható ezeken</legend>
+                            <div class="form-check"><input class="form-check-input" type="checkbox" id="optionalOnA" th:field="*{optionalOnA}"><label class="form-check-label" for="optionalOnA">A szakirány</label></div>
+                            <div class="form-check"><input class="form-check-input" type="checkbox" id="optionalOnB" th:field="*{optionalOnB}"><label class="form-check-label" for="optionalOnB">B szakirány</label></div>
+                            <div class="form-check"><input class="form-check-input" type="checkbox" id="optionalOnC" th:field="*{optionalOnC}"><label class="form-check-label" for="optionalOnC">C szakirány</label></div>
+                        </fieldset>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-secondary">Javaslat küldése</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
+<th:block th:replace="~{fragments :: scripts}"></th:block>
+<script>
+    (function () {
+        const subjectSelect = document.getElementById('disputeSubject');
+        const teacherSelect = document.getElementById('disputeTeacher');
+        if (!subjectSelect || !teacherSelect) return;
+
+        subjectSelect.addEventListener('change', async function () {
+            teacherSelect.innerHTML = '<option value="">Betöltés...</option>';
+            if (!this.value) {
+                teacherSelect.innerHTML = '<option value="">Előbb válassz tárgyat...</option>';
+                return;
+            }
+            const res = await fetch('/fixable/teachers?subjectId=' + encodeURIComponent(this.value));
+            const teachers = await res.json();
+            teacherSelect.innerHTML = '<option value="">Válassz oktatót...</option>';
+            teachers.forEach(t => {
+                const opt = document.createElement('option');
+                opt.value = t.id;
+                opt.textContent = t.name;
+                teacherSelect.appendChild(opt);
+            });
+        });
+    })();
+</script>
+</body>
+</html>

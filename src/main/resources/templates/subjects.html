@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Tárgyak')}"></head>
+<body>
+<nav th:replace="~{fragments :: navbar}"></nav>
+<div th:replace="~{fragments :: flash}"></div>
+
+<main class="py-4">
+    <div class="container">
+        <h1 class="mb-4">Tárgyak listája</h1>
+
+        <form th:action="@{/subjects}" method="get" class="row g-2 mb-4">
+            <div class="col-auto flex-grow-1">
+                <input type="text" name="q" class="form-control" placeholder="Keresés tárgynév alapján..."
+                       th:value="${query}">
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-secondary">Keresés</button>
+            </div>
+        </form>
+
+        <div th:if="${subjects.isEmpty()}" class="alert alert-warning">Nincs megjeleníthető tárgy.</div>
+
+        <div class="table-responsive" th:unless="${subjects.isEmpty()}">
+            <table class="table table-striped align-middle">
+                <thead>
+                <tr>
+                    <th>Név</th>
+                    <th>Kód</th>
+                    <th>Kredit</th>
+                    <th>Félév</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="subject : ${subjects}">
+                    <td th:text="${subject.name}">Tárgy</td>
+                    <td th:text="${subject.code}">KÓD</td>
+                    <td th:text="${subject.creditPoints}">0</td>
+                    <td th:text="${subject.evenSemester} ? 'Tavaszi' : 'Őszi'">—</td>
+                    <td>
+                        <a class="btn btn-sm btn-outline-secondary"
+                           th:href="@{/subjects/{id}(id=${subject.id})}">Információk</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
+<th:block th:replace="~{fragments :: scripts}"></th:block>
+</body>
+</html>

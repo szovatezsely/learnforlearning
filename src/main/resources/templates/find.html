@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Tárgy keresése')}"></head>
+<body>
+<nav th:replace="~{fragments :: navbar}"></nav>
+<div th:replace="~{fragments :: flash}"></div>
+
+<main class="py-4">
+    <div class="container">
+        <div class="p-4 p-md-5 bg-light rounded-3">
+            <h1 class="display-5">Kötelezően választható tárgy keresése</h1>
+            <hr class="my-4">
+
+            <h2 class="h4">A számodra még elérhető kötelezően választható tárgyak</h2>
+            <div th:if="${!canCalculate}" class="alert alert-danger">Válassz szakirányt, hogy kalkulálhass!</div>
+            <div th:if="${canCalculate}" class="mb-3">
+                <span th:if="${optionalSubjects.isEmpty()}" class="text-muted">
+                    Jelenleg nincs elérhető kötelezően választható tárgyad.
+                </span>
+                <a th:each="s : ${optionalSubjects}" class="badge bg-secondary text-decoration-none me-1 mb-1"
+                   th:href="@{/subjects/{id}(id=${s.id})}" th:text="${s.name}">Tárgy</a>
+            </div>
+
+            <hr class="my-4">
+            <h2 class="h4">A számodra korábban kalkulált kurzusok</h2>
+            <div th:if="${calculationsDeleted}" class="alert alert-warning">A korábbi kalkulációk törlésre kerültek!</div>
+            <div th:if="${history.isEmpty()}" class="alert alert-secondary" id="calc_empty">
+                Még nem használtad a kalkulációs funkciót!
+            </div>
+            <table class="table table-striped" th:unless="${history.isEmpty()}" id="calc_table">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Kurzus neve</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item, it : ${history}">
+                    <td th:text="${it.count}">1</td>
+                    <td th:text="${item.subjectName()}">Tárgy</td>
+                    <td>
+                        <a class="btn btn-sm btn-outline-secondary" th:if="${item.subjectId() != null}"
+                           th:href="@{/subjects/{id}(id=${item.subjectId()})}">Információk</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <form th:unless="${history.isEmpty()}" th:action="@{/findsubject/delete}" method="post" class="mb-3">
+                <button type="submit" class="btn btn-outline-danger">Korábbi kalkulációk törlése</button>
+            </form>
+
+            <hr class="my-4">
+            <p class="lead">A „Kalkulál” gombra kattintva megtudhatod, melyik lenne számodra a
+                legkedvezőbb kötelezően választható tárgy a kiválasztott félévre.</p>
+
+            <div class="row g-2 align-items-end" th:if="${canCalculate}">
+                <div class="col-md-5">
+                    <label for="semester" class="form-label">Aktuális félév</label>
+                    <select id="semester" class="form-select">
+                        <option value="1">Ősszel induló félév</option>
+                        <option value="2">Tavasszal induló félév</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button id="calc_button" type="button" class="btn btn-secondary w-100">Kalkulál</button>
+                </div>
+            </div>
+            <p th:unless="${canCalculate}" class="text-danger mt-3">
+                Kérlek válassz szakirányt, hogy kalkulálni tudjunk a számodra!
+            </p>
+
+            <div id="calc_spinner" class="mt-3" style="display:none">
+                <div class="spinner-border text-secondary" role="status"></div>
+                <span class="ms-2 fw-bold text-secondary">A kalkuláció folyamatban van...</span>
+            </div>
+            <div id="calc_success" class="alert alert-success mt-3" style="display:none">
+                A következő tárgy javasolandó: <strong id="calc_result"></strong>
+            </div>
+            <div id="calc_failed" class="alert alert-danger mt-3" style="display:none">
+                Számodra nincs megfelelő kötelezően választható tárgy!
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
+<th:block th:replace="~{fragments :: scripts}"></th:block>
+<script>
+    (function () {
+        const button = document.getElementById('calc_button');
+        if (!button) return;
+        const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
+
+        button.addEventListener('click', async function () {
+            const semester = document.getElementById('semester').value;
+            document.getElementById('calc_spinner').style.display = 'block';
+            document.getElementById('calc_success').style.display = 'none';
+            document.getElementById('calc_failed').style.display = 'none';
+
+            try {
+                const headers = {'Content-Type': 'application/x-www-form-urlencoded'};
+                if (csrfToken && csrfHeader) headers[csrfHeader] = csrfToken;
+                const response = await fetch('/findsubject/calculate', {
+                    method: 'POST',
+                    headers: headers,
+                    body: new URLSearchParams({semester: semester})
+                });
+                const result = await response.json();
+                document.getElementById('calc_spinner').style.display = 'none';
+                if (result.successful) {
+                    document.getElementById('calc_result').textContent = result.subject.name;
+                    document.getElementById('calc_success').style.display = 'block';
+                } else {
+                    document.getElementById('calc_failed').style.display = 'block';
+                }
+            } catch (e) {
+                document.getElementById('calc_spinner').style.display = 'none';
+                document.getElementById('calc_failed').style.display = 'block';
+            }
+        });
+    })();
+</script>
+</body>
+</html>

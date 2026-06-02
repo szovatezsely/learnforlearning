@@ -1,0 +1,18 @@
+# Build outputs and caches — rebuilt inside the image
+build/
+.gradle/
+
+# Local H2 database files
+data/
+*.mv.db
+*.trace.db
+
+# VCS and IDE
+.git/
+.gitignore
+.idea/
+*.iml
+.vscode/
+
+# Docs and CI not needed in the image
+*.md

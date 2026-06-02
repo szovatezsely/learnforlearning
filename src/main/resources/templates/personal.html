@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Adatok')}"></head>
+<body>
+<nav th:replace="~{fragments :: navbar}"></nav>
+<div th:replace="~{fragments :: flash}"></div>
+
+<main class="py-4">
+    <div class="container">
+        <h1 class="mb-4">Személyes adatok</h1>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <p class="mb-1"><strong>Név:</strong> <span th:text="${user.name}">Név</span></p>
+                <p class="mb-1"><strong>E-mail:</strong> <span th:text="${user.email}">e-mail</span></p>
+                <p class="mb-3"><strong>Specializáció:</strong>
+                    <span th:text="${user.specialization == T(com.learnforlearning.domain.Specialization).NONE}
+                                   ? 'Nincs megadva' : ${user.specialization}">—</span>
+                </p>
+                <a th:href="@{/personal/{id}/edit(id=${user.id})}" class="btn btn-outline-secondary">
+                    Specializáció módosítása
+                </a>
+            </div>
+        </div>
+
+        <h2 class="h4">Megjegyzéseid és értékeléseid</h2>
+        <div th:if="${votes.isEmpty()}" class="alert alert-secondary">Még nem értékeltél oktatót.</div>
+        <div class="table-responsive" th:unless="${votes.isEmpty()}">
+            <table class="table table-striped align-middle">
+                <thead>
+                <tr>
+                    <th>Oktató</th>
+                    <th>Értékelés</th>
+                    <th>Megjegyzés</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="v : ${votes}">
+                    <td th:text="${v.teacherName()}">Oktató</td>
+                    <td>
+                        <span th:if="${v.positiveVote() == true}" class="badge bg-success">👍</span>
+                        <span th:if="${v.positiveVote() == false}" class="badge bg-danger">👎</span>
+                        <span th:if="${v.positiveVote() == null}" class="text-muted">—</span>
+                    </td>
+                    <td th:text="${v.hasComment()} ? ${v.comment()} : '—'">—</td>
+                    <td class="text-end">
+                        <form th:if="${v.hasComment()}" th:action="@{/personal/comment/delete}" method="post">
+                            <input type="hidden" name="teacherId" th:value="${v.teacherId()}">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Megjegyzés törlése</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
+<th:block th:replace="~{fragments :: scripts}"></th:block>
+</body>
+</html>

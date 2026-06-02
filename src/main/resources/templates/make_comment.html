@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Megjegyzés írása')}"></head>
+<body>
+<nav th:replace="~{fragments :: navbar}"></nav>
+
+<main class="py-4">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        Megjegyzés – <span th:text="${teacher.name}">Oktató</span>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/subject/comment/update}" th:object="${commentForm}" method="post">
+                            <input type="hidden" th:field="*{teacherId}">
+                            <input type="hidden" th:field="*{subjectId}">
+                            <div class="mb-3">
+                                <label for="comment" class="form-label">Megjegyzésed</label>
+                                <textarea id="comment" rows="4" class="form-control" th:field="*{comment}"
+                                          th:classappend="${#fields.hasErrors('comment')} ? 'is-invalid'"></textarea>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('comment')}"
+                                     th:errors="*{comment}"></div>
+                            </div>
+                            <button type="submit" class="btn btn-secondary">Mentés</button>
+                            <a th:href="@{/subjects/{id}(id=*{subjectId})}" class="btn btn-link">Mégse</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
+<th:block th:replace="~{fragments :: scripts}"></th:block>
+</body>
+</html>

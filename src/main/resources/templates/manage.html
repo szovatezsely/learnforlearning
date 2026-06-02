@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Javaslatok kezelése')}"></head>
+<body>
+<nav th:replace="~{fragments :: navbar}"></nav>
+<div th:replace="~{fragments :: flash}"></div>
+
+<main class="py-4">
+    <div class="container">
+        <h1 class="mb-4">Javaslatok kezelése</h1>
+
+        <!-- Activity disputes -->
+        <h2 class="h4">Aktivitási észrevételek</h2>
+        <div th:if="${disputes.isEmpty()}" class="alert alert-secondary">Nincs függőben lévő észrevétel.</div>
+        <table class="table align-middle" th:unless="${disputes.isEmpty()}">
+            <thead>
+            <tr>
+                <th>Oktató</th>
+                <th>Tárgy</th>
+                <th>Jelenleg aktív?</th>
+                <th>Kifogások</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="d : ${disputes}">
+                <td th:text="${d.teacher().name}">Oktató</td>
+                <td th:text="${d.subjectName()}">Tárgy</td>
+                <td th:text="${d.active()} ? 'Igen' : 'Nem'">—</td>
+                <td th:text="${d.goingAgainst()}">0</td>
+                <td class="text-end">
+                    <form class="d-inline" th:action="@{/manage/changeActivity}" method="post">
+                        <input type="hidden" name="teacherId" th:value="${d.teacher().id}">
+                        <input type="hidden" name="subjectId" th:value="${d.subjectId()}">
+                        <input type="hidden" name="active" th:value="${!d.active()}">
+                        <button class="btn btn-sm btn-outline-primary" type="submit">Aktivitás váltása</button>
+                    </form>
+                    <form class="d-inline" th:action="@{/manage/resetAgainstActivity}" method="post">
+                        <input type="hidden" name="teacherId" th:value="${d.teacher().id}">
+                        <input type="hidden" name="subjectId" th:value="${d.subjectId()}">
+                        <button class="btn btn-sm btn-outline-secondary" type="submit">Elutasítás</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <!-- Pending teachers -->
+        <h2 class="h4 mt-5">Elfogadásra váró oktatók</h2>
+        <div th:if="${pendingTeachers.isEmpty()}" class="alert alert-secondary">Nincs függőben lévő oktató.</div>
+        <table class="table align-middle" th:unless="${pendingTeachers.isEmpty()}">
+            <tbody>
+            <tr th:each="t : ${pendingTeachers}">
+                <td th:text="${t.name}">Oktató</td>
+                <td class="text-end">
+                    <form class="d-inline" th:action="@{/manage/addTeacher}" method="post">
+                        <input type="hidden" name="teacherId" th:value="${t.id}">
+                        <button class="btn btn-sm btn-outline-success" type="submit">Elfogadás</button>
+                    </form>
+                    <form class="d-inline" th:action="@{/manage/deleteTeacher}" method="post">
+                        <input type="hidden" name="teacherId" th:value="${t.id}">
+                        <button class="btn btn-sm btn-outline-danger" type="submit">Törlés</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <!-- Pending subjects -->
+        <h2 class="h4 mt-5">Elfogadásra váró tárgyak</h2>
+        <div th:if="${pendingSubjects.isEmpty()}" class="alert alert-secondary">Nincs függőben lévő tárgy.</div>
+        <table class="table align-middle" th:unless="${pendingSubjects.isEmpty()}">
+            <tbody>
+            <tr th:each="s : ${pendingSubjects}">
+                <td th:text="${s.name}">Tárgy</td>
+                <td th:text="${s.code}">KÓD</td>
+                <td class="text-end">
+                    <form class="d-inline" th:action="@{/manage/addSubject}" method="post">
+                        <input type="hidden" name="subjectId" th:value="${s.id}">
+                        <button class="btn btn-sm btn-outline-success" type="submit">Elfogadás</button>
+                    </form>
+                    <form class="d-inline" th:action="@{/manage/deleteSubject}" method="post">
+                        <input type="hidden" name="subjectId" th:value="${s.id}">
+                        <button class="btn btn-sm btn-outline-danger" type="submit">Törlés</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
+<th:block th:replace="~{fragments :: scripts}"></th:block>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Regisztráció')}"></head>
+<body>
+<nav th:replace="~{fragments :: navbar}"></nav>
+
+<main class="py-4">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">Regisztráció</div>
+                    <div class="card-body">
+                        <form th:action="@{/register}" th:object="${registerForm}" method="post">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Név</label>
+                                <input type="text" id="name" class="form-control" th:field="*{name}"
+                                       th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'">
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}"
+                                     th:errors="*{name}"></div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">E-mail cím</label>
+                                <input type="email" id="email" class="form-control" th:field="*{email}"
+                                       th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'">
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}"
+                                     th:errors="*{email}"></div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Jelszó</label>
+                                <input type="password" id="password" class="form-control" th:field="*{password}"
+                                       th:classappend="${#fields.hasErrors('password')} ? 'is-invalid'">
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}"
+                                     th:errors="*{password}"></div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="passwordConfirmation" class="form-label">Jelszó megerősítése</label>
+                                <input type="password" id="passwordConfirmation" class="form-control"
+                                       th:field="*{passwordConfirmation}"
+                                       th:classappend="${#fields.hasErrors('passwordConfirmation')} ? 'is-invalid'">
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('passwordConfirmation')}"
+                                     th:errors="*{passwordConfirmation}"></div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Regisztráció</button>
+                            <a th:href="@{/login}" class="btn btn-link">Van már fiókod?</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
+<th:block th:replace="~{fragments :: scripts}"></th:block>
+</body>
+</html>

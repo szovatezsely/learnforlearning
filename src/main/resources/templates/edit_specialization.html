@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Specializáció módosítása')}"></head>
+<body>
+<nav th:replace="~{fragments :: navbar}"></nav>
+<div th:replace="~{fragments :: flash}"></div>
+
+<main class="py-4">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">Specializáció módosítása</div>
+                    <div class="card-body">
+                        <form th:action="@{/personal/{id}/update(id=${user.id})}"
+                              th:object="${specializationForm}" method="post">
+                            <div class="mb-3">
+                                <label for="specialization" class="form-label">Szakirány</label>
+                                <select id="specialization" class="form-select" th:field="*{specialization}"
+                                        th:classappend="${#fields.hasErrors('specialization')} ? 'is-invalid'">
+                                    <option th:value="A">A szakirány</option>
+                                    <option th:value="B">B szakirány</option>
+                                    <option th:value="C">C szakirány</option>
+                                    <option th:value="NONE">Nincs / még nem választottam</option>
+                                </select>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('specialization')}"
+                                     th:errors="*{specialization}"></div>
+                            </div>
+                            <button type="submit" class="btn btn-secondary">Mentés</button>
+                            <a th:href="@{/personal}" class="btn btn-link">Mégse</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
+<th:block th:replace="~{fragments :: scripts}"></th:block>
+</body>
+</html>

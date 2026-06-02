@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Jegy módosítása')}"></head>
+<body>
+<nav th:replace="~{fragments :: navbar}"></nav>
+<div th:replace="~{fragments :: flash}"></div>
+
+<main class="py-4">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        Jegy módosítása – <span th:text="${subject.name}">Tárgy</span>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/newsubject/{id}/update(id=${subject.id})}" method="post">
+                            <div class="mb-3">
+                                <label for="grade" class="form-label">Jegy (1–5)</label>
+                                <input type="number" id="grade" name="grade" min="1" max="5"
+                                       class="form-control" th:value="${grade}" required>
+                            </div>
+                            <button type="submit" class="btn btn-secondary">Mentés</button>
+                            <a th:href="@{/newsubject}" class="btn btn-link">Mégse</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
+<th:block th:replace="~{fragments :: scripts}"></th:block>
+</body>
+</html>

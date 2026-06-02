@@ -1,0 +1,95 @@
+spring:
+  application:
+    name: learnforlearning
+
+  # --- Default profile: file-based H2, zero external setup ---------------------
+  datasource:
+    url: jdbc:h2:file:./data/lfl;AUTO_SERVER=TRUE;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password: ""
+    driver-class-name: org.h2.Driver
+
+  jpa:
+    hibernate:
+      # `update` keeps the schema in sync with the entities for local development.
+      # Use Flyway/Liquibase and `validate` for a real production deployment.
+      ddl-auto: update
+    # Kept on for this server-rendered (Thymeleaf) app so views can safely traverse
+    # lazy associations during rendering. For a REST/JSON API, prefer `false` and
+    # fetch eagerly in queries instead.
+    open-in-view: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  thymeleaf:
+    cache: false
+
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true   # enables ?_method=DELETE / PUT for HTML forms
+
+server:
+  port: 8080
+
+# Seed sample data on first start.
+app:
+  seed-on-startup: true
+
+logging:
+  level:
+    com.learnforlearning: INFO
+
+---
+# --- Production profile: PostgreSQL ------------------------------------------
+# Run with: --spring.profiles.active=prod  (and set the DB_* env vars)
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/learnforlearning}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  h2:
+    console:
+      enabled: false
+  thymeleaf:
+    cache: true
+
+app:
+  seed-on-startup: false
+
+---
+# --- Docker profile: PostgreSQL with auto-schema + seeding ---------------------
+# Used by docker-compose so `docker compose up --build` just works out of the box.
+spring:
+  config:
+    activate:
+      on-profile: docker
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://db:5432/learnforlearning}
+    username: ${DB_USERNAME:learnforlearning}
+    password: ${DB_PASSWORD:learnforlearning}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+  h2:
+    console:
+      enabled: false
+  thymeleaf:
+    cache: true
+
+app:
+  seed-on-startup: true

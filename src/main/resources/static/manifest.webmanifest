@@ -1,0 +1,19 @@
+{
+  "name": "Tanulás a tanulásért",
+  "short_name": "Tanulás",
+  "description": "Kötelezően választható tárgyak ajánlása korábbi jegyek alapján.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#ffffff",
+  "theme_color": "#343a40",
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

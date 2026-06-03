@@ -6,3 +6,17 @@ if ('serviceWorker' in navigator) {
         });
     });
 }
+
+// Highlights the navbar link that matches the current page.
+window.addEventListener('DOMContentLoaded', function () {
+    var path = window.location.pathname;
+    document.querySelectorAll('.navbar .nav-link').forEach(function (link) {
+        var href = link.getAttribute('href');
+        if (!href || href === '#') return;
+        var isActive = href === '/' ? path === '/' : path === href || path.startsWith(href + '/');
+        if (isActive) {
+            link.classList.add('active');
+            link.setAttribute('aria-current', 'page');
+        }
+    });
+});

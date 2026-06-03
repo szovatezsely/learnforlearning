@@ -1,11 +1,8 @@
 <!DOCTYPE html>
-<html lang="hu" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments :: head('Tárgyak')}"></head>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: page('Tárgyak', ~{:: content})}">
 <body>
-<nav th:replace="~{fragments :: navbar}"></nav>
-<div th:replace="~{fragments :: flash}"></div>
-
-<main class="py-4">
+<th:block th:fragment="content">
     <div class="container">
         <h1 class="mb-4">Tárgyak listája</h1>
 
@@ -15,7 +12,7 @@
                        th:value="${query}">
             </div>
             <div class="col-auto">
-                <button type="submit" class="btn btn-secondary">Keresés</button>
+                <button type="submit" class="btn btn-primary">Keresés</button>
             </div>
         </form>
 
@@ -47,9 +44,6 @@
             </table>
         </div>
     </div>
-</main>
-
-<footer th:replace="~{fragments :: footer}"></footer>
-<th:block th:replace="~{fragments :: scripts}"></th:block>
+</th:block>
 </body>
 </html>

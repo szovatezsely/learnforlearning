@@ -1,11 +1,8 @@
 <!DOCTYPE html>
-<html lang="hu" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="~{fragments :: head('Javítási észrevételek')}"></head>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layout :: page('Javítási észrevételek', ~{:: content})}">
 <body>
-<nav th:replace="~{fragments :: navbar}"></nav>
-<div th:replace="~{fragments :: flash}"></div>
-
-<main class="py-4">
+<th:block th:fragment="content">
     <div class="container">
         <h1 class="mb-4">Javítási észrevételek</h1>
 
@@ -39,7 +36,7 @@
                             </div>
                         </div>
                         <div class="col-12">
-                            <button type="submit" class="btn btn-secondary">Észrevétel küldése</button>
+                            <button type="submit" class="btn btn-primary">Észrevétel küldése</button>
                         </div>
                     </form>
                 </div>
@@ -66,7 +63,7 @@
                             <div class="invalid-feedback" th:if="${#fields.hasErrors('subjectId')}" th:errors="*{subjectId}"></div>
                         </div>
                         <div class="col-12">
-                            <button type="submit" class="btn btn-secondary">Javaslat küldése</button>
+                            <button type="submit" class="btn btn-primary">Javaslat küldése</button>
                         </div>
                     </form>
                 </div>
@@ -120,40 +117,38 @@
                             <div class="form-check"><input class="form-check-input" type="checkbox" id="optionalOnC" th:field="*{optionalOnC}"><label class="form-check-label" for="optionalOnC">C szakirány</label></div>
                         </fieldset>
                         <div class="col-12">
-                            <button type="submit" class="btn btn-secondary">Javaslat küldése</button>
+                            <button type="submit" class="btn btn-primary">Javaslat küldése</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-</main>
 
-<footer th:replace="~{fragments :: footer}"></footer>
-<th:block th:replace="~{fragments :: scripts}"></th:block>
-<script>
-    (function () {
-        const subjectSelect = document.getElementById('disputeSubject');
-        const teacherSelect = document.getElementById('disputeTeacher');
-        if (!subjectSelect || !teacherSelect) return;
+    <script>
+        (function () {
+            const subjectSelect = document.getElementById('disputeSubject');
+            const teacherSelect = document.getElementById('disputeTeacher');
+            if (!subjectSelect || !teacherSelect) return;
 
-        subjectSelect.addEventListener('change', async function () {
-            teacherSelect.innerHTML = '<option value="">Betöltés...</option>';
-            if (!this.value) {
-                teacherSelect.innerHTML = '<option value="">Előbb válassz tárgyat...</option>';
-                return;
-            }
-            const res = await fetch('/fixable/teachers?subjectId=' + encodeURIComponent(this.value));
-            const teachers = await res.json();
-            teacherSelect.innerHTML = '<option value="">Válassz oktatót...</option>';
-            teachers.forEach(t => {
-                const opt = document.createElement('option');
-                opt.value = t.id;
-                opt.textContent = t.name;
-                teacherSelect.appendChild(opt);
+            subjectSelect.addEventListener('change', async function () {
+                teacherSelect.innerHTML = '<option value="">Betöltés...</option>';
+                if (!this.value) {
+                    teacherSelect.innerHTML = '<option value="">Előbb válassz tárgyat...</option>';
+                    return;
+                }
+                const res = await fetch('/fixable/teachers?subjectId=' + encodeURIComponent(this.value));
+                const teachers = await res.json();
+                teacherSelect.innerHTML = '<option value="">Válassz oktatót...</option>';
+                teachers.forEach(t => {
+                    const opt = document.createElement('option');
+                    opt.value = t.id;
+                    opt.textContent = t.name;
+                    teacherSelect.appendChild(opt);
+                });
             });
-        });
-    })();
-</script>
+        })();
+    </script>
+</th:block>
 </body>
 </html>

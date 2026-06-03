@@ -1,20 +1,18 @@
 <!DOCTYPE html>
-<html lang="hu" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments :: head('Megjegyzések')}"></head>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: page('Megjegyzések', ~{:: content})}">
 <body>
-<nav th:replace="~{fragments :: navbar}"></nav>
-
-<main class="py-4">
+<th:block th:fragment="content">
     <div class="container">
         <h1 class="mb-4">
             <span th:text="${teacher.name}">Oktató</span> – megjegyzések
         </h1>
 
-        <div th:with="hasComments=${#lists.size(comments) > 0 and comments.?[hasComment()].size() > 0}">
-            <div th:if="${!hasComments}" class="alert alert-secondary">
+        <div th:with="withComments=${comments.?[hasComment()]}">
+            <div th:if="${withComments.isEmpty()}" class="alert alert-secondary">
                 Erről az oktatóról még nem írtak megjegyzést.
             </div>
-            <div class="mb-3" th:each="c : ${comments}" th:if="${c.hasComment()}">
+            <div class="mb-3" th:each="c : ${withComments}">
                 <div class="card">
                     <div class="card-header">
                         <strong th:text="${c.author()}">Szerző</strong>
@@ -33,9 +31,6 @@
         <a th:unless="${subjectId != null}" th:href="@{/subjects}"
            class="btn btn-outline-secondary">Vissza a listához</a>
     </div>
-</main>
-
-<footer th:replace="~{fragments :: footer}"></footer>
-<th:block th:replace="~{fragments :: scripts}"></th:block>
+</th:block>
 </body>
 </html>

@@ -1,13 +1,10 @@
 <!DOCTYPE html>
-<html lang="hu" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments :: head('Tárgy keresése')}"></head>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: page('Tárgy keresése', ~{:: content})}">
 <body>
-<nav th:replace="~{fragments :: navbar}"></nav>
-<div th:replace="~{fragments :: flash}"></div>
-
-<main class="py-4">
+<th:block th:fragment="content">
     <div class="container">
-        <div class="p-4 p-md-5 bg-light rounded-3">
+        <div class="p-4 p-md-5 app-hero">
             <h1 class="display-5">Kötelezően választható tárgy keresése</h1>
             <hr class="my-4">
 
@@ -63,7 +60,7 @@
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <button id="calc_button" type="button" class="btn btn-secondary w-100">Kalkulál</button>
+                    <button id="calc_button" type="button" class="btn btn-primary w-100">Kalkulál</button>
                 </div>
             </div>
             <p th:unless="${canCalculate}" class="text-danger mt-3">
@@ -82,45 +79,43 @@
             </div>
         </div>
     </div>
-</main>
 
-<footer th:replace="~{fragments :: footer}"></footer>
-<th:block th:replace="~{fragments :: scripts}"></th:block>
-<script>
-    (function () {
-        const button = document.getElementById('calc_button');
-        if (!button) return;
-        const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
-        const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
+    <script>
+        (function () {
+            const button = document.getElementById('calc_button');
+            if (!button) return;
+            const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
+            const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
 
-        button.addEventListener('click', async function () {
-            const semester = document.getElementById('semester').value;
-            document.getElementById('calc_spinner').style.display = 'block';
-            document.getElementById('calc_success').style.display = 'none';
-            document.getElementById('calc_failed').style.display = 'none';
+            button.addEventListener('click', async function () {
+                const semester = document.getElementById('semester').value;
+                document.getElementById('calc_spinner').style.display = 'block';
+                document.getElementById('calc_success').style.display = 'none';
+                document.getElementById('calc_failed').style.display = 'none';
 
-            try {
-                const headers = {'Content-Type': 'application/x-www-form-urlencoded'};
-                if (csrfToken && csrfHeader) headers[csrfHeader] = csrfToken;
-                const response = await fetch('/findsubject/calculate', {
-                    method: 'POST',
-                    headers: headers,
-                    body: new URLSearchParams({semester: semester})
-                });
-                const result = await response.json();
-                document.getElementById('calc_spinner').style.display = 'none';
-                if (result.successful) {
-                    document.getElementById('calc_result').textContent = result.subject.name;
-                    document.getElementById('calc_success').style.display = 'block';
-                } else {
+                try {
+                    const headers = {'Content-Type': 'application/x-www-form-urlencoded'};
+                    if (csrfToken && csrfHeader) headers[csrfHeader] = csrfToken;
+                    const response = await fetch('/findsubject/calculate', {
+                        method: 'POST',
+                        headers: headers,
+                        body: new URLSearchParams({semester: semester})
+                    });
+                    const result = await response.json();
+                    document.getElementById('calc_spinner').style.display = 'none';
+                    if (result.successful) {
+                        document.getElementById('calc_result').textContent = result.subject.name;
+                        document.getElementById('calc_success').style.display = 'block';
+                    } else {
+                        document.getElementById('calc_failed').style.display = 'block';
+                    }
+                } catch (e) {
+                    document.getElementById('calc_spinner').style.display = 'none';
                     document.getElementById('calc_failed').style.display = 'block';
                 }
-            } catch (e) {
-                document.getElementById('calc_spinner').style.display = 'none';
-                document.getElementById('calc_failed').style.display = 'block';
-            }
-        });
-    })();
-</script>
+            });
+        })();
+    </script>
+</th:block>
 </body>
 </html>

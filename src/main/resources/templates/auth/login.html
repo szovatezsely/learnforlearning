@@ -1,10 +1,8 @@
 <!DOCTYPE html>
-<html lang="hu" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments :: head('Bejelentkezés')}"></head>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: page('Bejelentkezés', ~{:: content})}">
 <body>
-<nav th:replace="~{fragments :: navbar}"></nav>
-
-<main class="py-4">
+<th:block th:fragment="content">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-6">
@@ -23,11 +21,13 @@
                         <form th:action="@{/login}" method="post">
                             <div class="mb-3">
                                 <label for="username" class="form-label">E-mail cím</label>
-                                <input type="email" id="username" name="username" class="form-control" required autofocus>
+                                <input type="email" id="username" name="username" class="form-control"
+                                       autocomplete="username" required autofocus>
                             </div>
                             <div class="mb-3">
                                 <label for="password" class="form-label">Jelszó</label>
-                                <input type="password" id="password" name="password" class="form-control" required>
+                                <input type="password" id="password" name="password" class="form-control"
+                                       autocomplete="current-password" required>
                             </div>
                             <button type="submit" class="btn btn-primary">Bejelentkezés</button>
                             <a th:href="@{/register}" class="btn btn-link">Még nincs fiókod?</a>
@@ -37,9 +37,6 @@
             </div>
         </div>
     </div>
-</main>
-
-<footer th:replace="~{fragments :: footer}"></footer>
-<th:block th:replace="~{fragments :: scripts}"></th:block>
+</th:block>
 </body>
 </html>

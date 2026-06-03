@@ -1,11 +1,8 @@
 <!DOCTYPE html>
-<html lang="hu" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments :: head('Jegy módosítása')}"></head>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: page('Jegy módosítása', ~{:: content})}">
 <body>
-<nav th:replace="~{fragments :: navbar}"></nav>
-<div th:replace="~{fragments :: flash}"></div>
-
-<main class="py-4">
+<th:block th:fragment="content">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-6">
@@ -20,7 +17,7 @@
                                 <input type="number" id="grade" name="grade" min="1" max="5"
                                        class="form-control" th:value="${grade}" required>
                             </div>
-                            <button type="submit" class="btn btn-secondary">Mentés</button>
+                            <button type="submit" class="btn btn-primary">Mentés</button>
                             <a th:href="@{/newsubject}" class="btn btn-link">Mégse</a>
                         </form>
                     </div>
@@ -28,9 +25,6 @@
             </div>
         </div>
     </div>
-</main>
-
-<footer th:replace="~{fragments :: footer}"></footer>
-<th:block th:replace="~{fragments :: scripts}"></th:block>
+</th:block>
 </body>
 </html>

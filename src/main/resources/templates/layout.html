@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<!--
+  Shared page skeleton. Pages call it with:
+      <html th:replace="~{layout :: page('Title', ~{:: content})}">
+  and supply their body inside <th:block th:fragment="content"> ... </th:block>.
+  Page-specific scripts can live at the end of that content block.
+-->
+<html lang="hu" xmlns:th="http://www.thymeleaf.org" th:fragment="page(title, content)">
+<head th:replace="~{fragments :: head(${title})}"></head>
+<body>
+<nav th:replace="~{fragments :: navbar}"></nav>
+<div th:replace="~{fragments :: flash}"></div>
+<main class="py-4">
+    <th:block th:replace="${content}"></th:block>
+</main>
+<footer th:replace="~{fragments :: footer}"></footer>
+<th:block th:replace="~{fragments :: scripts}"></th:block>
+</body>
+</html>

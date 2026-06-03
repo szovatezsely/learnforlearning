@@ -1,13 +1,10 @@
 <!DOCTYPE html>
-<html lang="hu" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments :: head('Kezdőlap')}"></head>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: page('Kezdőlap', ~{:: content})}">
 <body>
-<nav th:replace="~{fragments :: navbar}"></nav>
-<div th:replace="~{fragments :: flash}"></div>
-
-<main class="py-4">
+<th:block th:fragment="content">
     <div class="container">
-        <div class="p-5 mb-4 bg-light rounded-3">
+        <div class="p-4 p-md-5 mb-4 app-hero">
             <h1 class="display-4">Üdvözöllek!</h1>
             <p class="lead">Jelen szoftver célja, hogy a kötelezően választható tárgyak közül
                 meghatározza, kinek melyik tárgy lenne a legalkalmasabb a felvételre.</p>
@@ -18,7 +15,7 @@
                 <li>A felhasznált adatok mennyisége:
                     <strong th:text="${stats.gradeCount()}">0</strong></li>
             </ul>
-            <a class="btn btn-secondary btn-lg" th:href="@{/subjects}" role="button">Tárgyak listázása</a>
+            <a class="btn btn-primary btn-lg" th:href="@{/subjects}" role="button">Tárgyak listázása</a>
 
             <th:block th:if="${!stats.recentComments().isEmpty()}">
                 <hr class="my-4">
@@ -40,9 +37,6 @@
                 <span class="fw-bold fs-5" th:text="${stats.bestTeacher()}">—</span></p>
         </div>
     </div>
-</main>
-
-<footer th:replace="~{fragments :: footer}"></footer>
-<th:block th:replace="~{fragments :: scripts}"></th:block>
+</th:block>
 </body>
 </html>

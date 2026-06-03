@@ -1,10 +1,8 @@
 <!DOCTYPE html>
-<html lang="hu" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments :: head('Megjegyzés írása')}"></head>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: page('Megjegyzés írása', ~{:: content})}">
 <body>
-<nav th:replace="~{fragments :: navbar}"></nav>
-
-<main class="py-4">
+<th:block th:fragment="content">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
@@ -23,7 +21,7 @@
                                 <div class="invalid-feedback" th:if="${#fields.hasErrors('comment')}"
                                      th:errors="*{comment}"></div>
                             </div>
-                            <button type="submit" class="btn btn-secondary">Mentés</button>
+                            <button type="submit" class="btn btn-primary">Mentés</button>
                             <a th:href="@{/subjects/{id}(id=*{subjectId})}" class="btn btn-link">Mégse</a>
                         </form>
                     </div>
@@ -31,9 +29,6 @@
             </div>
         </div>
     </div>
-</main>
-
-<footer th:replace="~{fragments :: footer}"></footer>
-<th:block th:replace="~{fragments :: scripts}"></th:block>
+</th:block>
 </body>
 </html>

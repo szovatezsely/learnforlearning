@@ -1,18 +1,13 @@
 <!DOCTYPE html>
-<html lang="hu" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments :: head('Offline')}"></head>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: page('Offline', ~{:: content})}">
 <body>
-<nav th:replace="~{fragments :: navbar}"></nav>
-
-<main class="py-4">
+<th:block th:fragment="content">
     <div class="container text-center py-5">
         <h1 class="display-5">Nincs internetkapcsolat</h1>
         <p class="lead">Úgy tűnik, jelenleg nem vagy online. Kérlek, ellenőrizd a kapcsolatot, majd próbáld újra.</p>
-        <a th:href="@{/}" class="btn btn-secondary">Újrapróbálkozás</a>
+        <a th:href="@{/}" class="btn btn-primary">Újrapróbálkozás</a>
     </div>
-</main>
-
-<footer th:replace="~{fragments :: footer}"></footer>
-<th:block th:replace="~{fragments :: scripts}"></th:block>
+</th:block>
 </body>
 </html>

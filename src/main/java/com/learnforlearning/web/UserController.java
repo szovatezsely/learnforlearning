@@ -89,8 +89,10 @@ public class UserController {
     public String vote(@RequestParam Long teacherId,
                        @RequestParam Long subjectId,
                        @RequestParam boolean positive,
-                       @AuthenticationPrincipal UserPrincipal principal) {
+                       @AuthenticationPrincipal UserPrincipal principal,
+                       RedirectAttributes redirect) {
         userService.vote(principal.getId(), teacherId, positive);
+        redirect.addFlashAttribute("success", "A szavazatod rögzítésre került!");
         return "redirect:/subjects/" + subjectId;
     }
 
@@ -116,20 +118,24 @@ public class UserController {
     public String saveComment(@Valid @ModelAttribute("commentForm") CommentForm form,
                               BindingResult binding,
                               @AuthenticationPrincipal UserPrincipal principal,
-                              Model model) {
+                              Model model,
+                              RedirectAttributes redirect) {
         if (binding.hasErrors()) {
             model.addAttribute("teacher", teacherService.findById(form.getTeacherId()).orElseThrow());
             return "make_comment";
         }
         userService.addComment(principal.getId(), form.getTeacherId(), form.getComment());
+        redirect.addFlashAttribute("success", "A megjegyzésed mentésre került!");
         return "redirect:/subjects/" + form.getSubjectId();
     }
 
     @PostMapping("/subject/comment/delete")
     public String deleteSubjectComment(@RequestParam Long teacherId,
                                        @RequestParam Long subjectId,
-                                       @AuthenticationPrincipal UserPrincipal principal) {
+                                       @AuthenticationPrincipal UserPrincipal principal,
+                                       RedirectAttributes redirect) {
         userService.deleteComment(principal.getId(), teacherId);
+        redirect.addFlashAttribute("success", "A megjegyzésed törlésre került!");
         return "redirect:/subjects/" + subjectId;
     }
 

@@ -50,7 +50,7 @@ one-line change in `roundError(...)`.
 ## Tech stack
 
 - **Java 17**, **Spring Boot 3.3** (Spring MVC, Spring Security, Spring Data JPA, Bean Validation)
-- **Thymeleaf** server-rendered views + **Bootstrap 5**
+- **Thymeleaf** server-rendered views (shared layout fragment) + **Bootstrap 5** with a custom theme (Inter / Roboto Slab fonts, brand palette)
 - **H2** file database by default (zero setup); **PostgreSQL** for the `prod` profile
 - **Gradle** (Kotlin DSL) with the wrapper
 - **JUnit 5** for tests
@@ -147,7 +147,7 @@ src/main/java/com/learnforlearning
 │   └── view/          Small read-model records for the templates
 └── config/            Security, data seeding
 src/main/resources
-├── templates/         Thymeleaf views (+ shared fragments.html)
+├── templates/         Thymeleaf views (layout.html skeleton + shared fragments.html)
 ├── static/            CSS, JS, PWA manifest, service worker, icon
 └── application.yml    Default (H2) + prod (PostgreSQL) profiles
 ```
